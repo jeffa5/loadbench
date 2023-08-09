@@ -8,7 +8,7 @@ use tracing::{info, warn};
 use crate::{
     client::{self, Dispatcher, DispatcherGenerator},
     input::InputGenerator,
-    writer::Writer,
+    output_sink::OutputSink,
 };
 
 /// Tries to generate a request every interval milliseconds for a total number of requests.
@@ -16,7 +16,7 @@ use crate::{
 pub async fn generate_load<
     D: DispatcherGenerator,
     I: InputGenerator<Input = <D::Dispatcher as Dispatcher>::Input>,
-    W: Writer<<D::Dispatcher as Dispatcher>::Output> + 'static,
+    S: OutputSink<<D::Dispatcher as Dispatcher>::Output> + 'static,
 >(
     // TODO: move to options struct
     rate: u64,
@@ -25,7 +25,7 @@ pub async fn generate_load<
     max_clients: Option<u32>,
     mut input_generator: I,
     mut dispatcher_generator: D,
-    writer: &mut W,
+    output_sink: &mut S,
 ) where
     <D::Dispatcher as Dispatcher>::Output: Serialize + Default,
 {
@@ -101,7 +101,7 @@ pub async fn generate_load<
         match task.await {
             Ok(outputs) => {
                 for output in outputs {
-                    writer.write(output).await;
+                    output_sink.send(output).await;
                 }
             }
             Err(error) => {

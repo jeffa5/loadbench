@@ -3,23 +3,23 @@ use serde::Serialize;
 
 use crate::Output;
 
-/// A writer of outputs.
+/// A sink for outputs.
 #[async_trait]
-pub trait Writer<O> {
-    async fn write(&mut self, output: Output<O>);
+pub trait OutputSink<O> {
+    async fn send(&mut self, output: Output<O>);
 }
 
 /// Do nothing with the outputs.
-pub struct NoOpWriter;
+pub struct NoOpOutputSink;
 
 #[async_trait]
-impl<O: Send + 'static> Writer<O> for NoOpWriter {
-    async fn write(&mut self, _output: Output<O>) {}
+impl<O: Send + 'static> OutputSink<O> for NoOpOutputSink {
+    async fn send(&mut self, _output: Output<O>) {}
 }
 
 /// Produce some stats from the outputs.
 #[derive(Default, Debug)]
-pub struct StatsWriter {
+pub struct StatsOutputSink {
     error_count: u64,
     success_count: u64,
     latency_ns: Vec<i64>,
@@ -28,8 +28,8 @@ pub struct StatsWriter {
 }
 
 #[async_trait]
-impl<O: Send + 'static> Writer<O> for StatsWriter {
-    async fn write(&mut self, output: Output<O>) {
+impl<O: Send + 'static> OutputSink<O> for StatsOutputSink {
+    async fn send(&mut self, output: Output<O>) {
         if output.is_error() {
             self.error_count += 1;
         } else {
@@ -47,7 +47,7 @@ impl<O: Send + 'static> Writer<O> for StatsWriter {
     }
 }
 
-impl StatsWriter {
+impl StatsOutputSink {
     /// Print stats.
     pub fn summary(&self) {
         let total = self.success_count + self.error_count;
@@ -83,13 +83,13 @@ impl StatsWriter {
 }
 
 /// Write outputs to a csv file.
-pub struct CsvWriter<W: std::io::Write> {
+pub struct CsvOutputSink<W: std::io::Write> {
     pub writer: csv::Writer<W>,
 }
 
 #[async_trait]
-impl<O: Serialize + Send + 'static, W: std::io::Write + Send> Writer<O> for CsvWriter<W> {
-    async fn write(&mut self, output: Output<O>) {
+impl<O: Serialize + Send + 'static, W: std::io::Write + Send> OutputSink<O> for CsvOutputSink<W> {
+    async fn send(&mut self, output: Output<O>) {
         self.writer.serialize(output).unwrap();
     }
 }

@@ -167,7 +167,7 @@ impl Dispatcher for YcsbDispatcher {
 
     type Output = ();
 
-    async fn execute_scenario(&mut self, _request: Self::Input) -> Result<Self::Output, String> {
+    async fn execute(&mut self, _request: Self::Input) -> Result<Self::Output, String> {
         Ok(())
     }
 }

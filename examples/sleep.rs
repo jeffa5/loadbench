@@ -46,7 +46,7 @@ impl Dispatcher for SleepDispatcher {
     type Input = Duration;
     type Output = SleepOutput;
 
-    async fn execute_scenario(&mut self, duration: Self::Input) -> Result<Self::Output, String> {
+    async fn execute(&mut self, duration: Self::Input) -> Result<Self::Output, String> {
         tokio::time::sleep(duration).await;
         Ok(SleepOutput {})
     }

@@ -13,10 +13,10 @@ pub trait DispatcherGenerator {
 pub trait Dispatcher: Send + 'static {
     type Input: Send;
     type Output: Send + Default;
-    async fn execute_scenario(&mut self, request: Self::Input) -> Result<Self::Output, String>;
+    async fn execute(&mut self, request: Self::Input) -> Result<Self::Output, String>;
 }
 
-pub async fn run<D: Dispatcher>(
+pub(crate) async fn run<D: Dispatcher>(
     receiver: async_channel::Receiver<D::Input>,
     client: u32,
     mut dispatcher: D,
@@ -28,7 +28,7 @@ where
     let mut iteration = 0;
     while let Ok(input) = receiver.recv().await {
         let mut output = Output::start(client, iteration);
-        let res = dispatcher.execute_scenario(input).await;
+        let res = dispatcher.execute(input).await;
         output.stop();
         match res {
             Ok(data) => {

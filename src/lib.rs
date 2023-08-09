@@ -1,8 +1,9 @@
 pub mod client;
 pub mod input;
-pub mod loadgen;
+mod loadgen;
 mod output;
-pub mod writer;
+pub mod output_sink;
 
+pub use loadgen::generate_load;
 pub use output::Output;
 pub use output::OutputCore;
