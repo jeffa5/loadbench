@@ -34,14 +34,14 @@ impl<O: Send + 'static> Writer<O> for StatsWriter {
             self.success_count += 1;
         }
 
-        let latency_ns = output.0.end_ns - output.0.start_ns;
+        let latency_ns = output.core.end_ns - output.core.start_ns;
         self.latency_ns.push(latency_ns);
 
         if self.start_ns == 0 {
-            self.start_ns = output.0.start_ns;
+            self.start_ns = output.core.start_ns;
         }
-        self.start_ns = std::cmp::min(self.start_ns, output.0.start_ns);
-        self.end_ns = std::cmp::max(self.end_ns, output.0.end_ns);
+        self.start_ns = std::cmp::min(self.start_ns, output.core.start_ns);
+        self.end_ns = std::cmp::max(self.end_ns, output.core.end_ns);
     }
 }
 

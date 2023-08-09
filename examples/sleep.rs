@@ -10,7 +10,6 @@ use loadbench::{
     input::InputGenerator,
     loadgen,
     writer::StatsWriter,
-    Output,
 };
 
 pub struct SleepInputGenerator {
@@ -47,16 +46,9 @@ impl Dispatcher for SleepDispatcher {
     type Input = Duration;
     type Output = SleepOutput;
 
-    async fn execute_scenario(
-        &mut self,
-        client: u32,
-        iteration: u32,
-        duration: Self::Input,
-    ) -> Vec<Output<Self::Output>> {
-        let mut output = Output::start(client, iteration);
+    async fn execute_scenario(&mut self, duration: Self::Input) -> Result<Self::Output, String> {
         tokio::time::sleep(duration).await;
-        output.stop();
-        vec![output]
+        Ok(SleepOutput {})
     }
 }
 

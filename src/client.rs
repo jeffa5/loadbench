@@ -13,12 +13,7 @@ pub trait DispatcherGenerator {
 pub trait Dispatcher: Send + 'static {
     type Input: Send;
     type Output: Send + Default;
-    async fn execute_scenario(
-        &mut self,
-        client: u32,
-        iteration: u32,
-        request: Self::Input,
-    ) -> Vec<Output<Self::Output>>;
+    async fn execute_scenario(&mut self, request: Self::Input) -> Result<Self::Output, String>;
 }
 
 pub async fn run<D: Dispatcher>(
@@ -32,8 +27,18 @@ where
     let mut all_outputs = Vec::new();
     let mut iteration = 0;
     while let Ok(input) = receiver.recv().await {
-        let mut outputs = dispatcher.execute_scenario(client, iteration, input).await;
-        all_outputs.append(&mut outputs);
+        let mut output = Output::start(client, iteration);
+        let res = dispatcher.execute_scenario(input).await;
+        output.stop();
+        match res {
+            Ok(data) => {
+                *output.data_mut() = data;
+            }
+            Err(error) => {
+                output.error(error);
+            }
+        }
+        all_outputs.push(output);
 
         iteration += 1;
         trace!(%client, %iteration, "Client finished iteration");
