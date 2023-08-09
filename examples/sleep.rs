@@ -7,9 +7,9 @@ use tracing_subscriber::util::SubscriberInitExt;
 
 use loadbench::{
     client::{Dispatcher, DispatcherGenerator},
+    generate_load,
     input::InputGenerator,
-    loadgen,
-    writer::StatsWriter,
+    output_sink::StatsOutputSink,
 };
 
 pub struct SleepInputGenerator {
@@ -80,7 +80,7 @@ async fn main() {
     };
 
     let sleep_dispatcher = SleepDispatcherGenerator {};
-    let mut writer = StatsWriter::default();
+    let mut writer = StatsOutputSink::default();
 
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer())
@@ -91,7 +91,7 @@ async fn main() {
         )
         .init();
 
-    loadgen::generate_load(
+    generate_load(
         args.rate,
         args.initial_clients,
         args.total,

@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 use clap::Parser;
 use loadbench::client::{Dispatcher, DispatcherGenerator};
-use loadbench::loadgen;
-use loadbench::{input::InputGenerator, writer::StatsWriter};
+use loadbench::generate_load;
+use loadbench::{input::InputGenerator, output_sink::StatsOutputSink};
 use rand::SeedableRng;
 use rand::{distributions::Alphanumeric, rngs::StdRng, Rng};
 use rand_distr::{Distribution, WeightedAliasIndex, Zipf};
@@ -222,7 +222,7 @@ async fn main() {
     };
 
     let sleep_dispatcher = YcsbDispatcherGenerator {};
-    let mut writer = StatsWriter::default();
+    let mut writer = StatsOutputSink::default();
 
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer())
@@ -233,7 +233,7 @@ async fn main() {
         )
         .init();
 
-    loadgen::generate_load(
+    generate_load(
         args.rate,
         args.initial_clients,
         args.total,

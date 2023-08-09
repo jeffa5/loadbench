@@ -29,6 +29,7 @@
         })
         pkgs.cargo-udeps
         pkgs.cargo-edit
+        pkgs.cargo-flamegraph
       ];
     };
   };
