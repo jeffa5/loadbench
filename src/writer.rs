@@ -3,6 +3,7 @@ use serde::Serialize;
 
 use crate::Output;
 
+/// A writer of outputs.
 #[async_trait]
 pub trait Writer<O> {
     async fn write(&mut self, output: Output<O>);
@@ -16,6 +17,7 @@ impl<O: Send + 'static> Writer<O> for NoOpWriter {
     async fn write(&mut self, _output: Output<O>) {}
 }
 
+/// Produce some stats from the outputs.
 #[derive(Default, Debug)]
 pub struct StatsWriter {
     error_count: u64,
@@ -46,6 +48,7 @@ impl<O: Send + 'static> Writer<O> for StatsWriter {
 }
 
 impl StatsWriter {
+    /// Print stats.
     pub fn summary(&self) {
         let total = self.success_count + self.error_count;
         println!("     Total requests: {}", total);
@@ -79,6 +82,7 @@ impl StatsWriter {
     }
 }
 
+/// Write outputs to a csv file.
 pub struct CsvWriter<W: std::io::Write> {
     pub writer: csv::Writer<W>,
 }

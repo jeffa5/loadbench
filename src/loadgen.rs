@@ -11,10 +11,6 @@ use crate::{
     writer::Writer,
 };
 
-pub enum Msg {
-    Sleep(Duration),
-}
-
 /// Tries to generate a request every interval milliseconds for a total number of requests.
 /// If it would block trying to spawn the request it will create a new client.
 pub async fn generate_load<
