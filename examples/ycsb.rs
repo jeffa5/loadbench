@@ -208,7 +208,7 @@ struct Args {
 async fn main() {
     let args = Args::parse();
 
-    let sleep_input = YcsbInputGenerator {
+    let input = YcsbInputGenerator {
         read_weight: args.read_weight,
         scan_weight: args.scan_weight,
         insert_weight: args.insert_weight,
@@ -221,7 +221,7 @@ async fn main() {
         request_distribution: args.request_distribution,
     };
 
-    let sleep_dispatcher = YcsbDispatcherGenerator {};
+    let dispatcher = YcsbDispatcherGenerator {};
     let mut writer = StatsOutputSink::default();
 
     tracing_subscriber::registry()
@@ -238,8 +238,8 @@ async fn main() {
         args.initial_clients,
         args.total,
         args.max_clients,
-        sleep_input,
-        sleep_dispatcher,
+        input,
+        dispatcher,
         &mut writer,
     )
     .await;
