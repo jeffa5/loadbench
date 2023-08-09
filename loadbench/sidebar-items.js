@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["generate_load"],"mod":["client","input","output_sink"],"struct":["Output","OutputCore"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CsvOutputSink","NoOpOutputSink","StatsOutputSink"],"trait":["OutputSink"]};
