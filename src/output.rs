@@ -4,8 +4,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Output<D> {
     /// The core output metrics.
+    #[serde(flatten)]
     pub core: OutputCore,
     /// The custom data recorded.
+    #[serde(flatten)]
     pub custom: D,
 }
 

@@ -93,3 +93,27 @@ impl<O: Serialize + Send + 'static, W: std::io::Write + Send> OutputSink<O> for 
         self.writer.serialize(output).unwrap();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_csv_output_sink() {
+        let output = Output {
+            core: crate::OutputCore {
+                start_ns: 0,
+                end_ns: 0,
+                error: None,
+                client: 0,
+                iteration: 0,
+            },
+            custom: (),
+        };
+        let out = Vec::new();
+        let mut sink = CsvOutputSink {
+            writer: csv::Writer::from_writer(out),
+        };
+        sink.send(output).await;
+    }
+}
