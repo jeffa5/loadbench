@@ -93,6 +93,30 @@
 <a href="#93" id="93">93</a>
 <a href="#94" id="94">94</a>
 <a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>serde::Serialize;
 
@@ -186,6 +210,30 @@
 </span><span class="kw">impl</span>&lt;O: Serialize + Send + <span class="lifetime">&#39;static</span>, W: std::io::Write + Send&gt; OutputSink&lt;O&gt; <span class="kw">for </span>CsvOutputSink&lt;W&gt; {
     <span class="kw">async fn </span>send(<span class="kw-2">&amp;mut </span><span class="self">self</span>, output: Output&lt;O&gt;) {
         <span class="self">self</span>.writer.serialize(output).unwrap();
+    }
+}
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+
+    <span class="attr">#[tokio::test]
+    </span><span class="kw">async fn </span>test_csv_output_sink() {
+        <span class="kw">let </span>output = Output {
+            core: <span class="kw">crate</span>::OutputCore {
+                start_ns: <span class="number">0</span>,
+                end_ns: <span class="number">0</span>,
+                error: <span class="prelude-val">None</span>,
+                client: <span class="number">0</span>,
+                iteration: <span class="number">0</span>,
+            },
+            custom: (),
+        };
+        <span class="kw">let </span>out = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>sink = CsvOutputSink {
+            writer: csv::Writer::from_writer(out),
+        };
+        sink.send(output).<span class="kw">await</span>;
     }
 }
 </code></pre></div></section></main></body></html>

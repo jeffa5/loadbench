@@ -66,14 +66,18 @@
 <a href="#66" id="66">66</a>
 <a href="#67" id="67">67</a>
 <a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>serde::{Deserialize, Serialize};
 
 <span class="doccomment">/// The output of an execution.
 </span><span class="attr">#[derive(Debug, Clone, Serialize, Deserialize)]
 </span><span class="kw">pub struct </span>Output&lt;D&gt; {
     <span class="doccomment">/// The core output metrics.
+    </span><span class="attr">#[serde(flatten)]
     </span><span class="kw">pub </span>core: OutputCore,
     <span class="doccomment">/// The custom data recorded.
+    </span><span class="attr">#[serde(flatten)]
     </span><span class="kw">pub </span>custom: D,
 }
 
