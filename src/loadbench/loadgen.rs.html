@@ -121,7 +121,7 @@
 
 <span class="kw">use </span>async_channel::TrySendError;
 <span class="kw">use </span>tokio::time::interval;
-<span class="kw">use </span>tracing::{info, warn};
+<span class="kw">use </span>tracing::{info, warn, trace, debug};
 
 <span class="kw">use crate</span>::{
     client::{<span class="self">self</span>, Dispatcher, DispatcherGenerator},
@@ -218,10 +218,10 @@
 
     <span class="kw">let </span>total = tasks.len();
     <span class="kw">for </span>(i, task) <span class="kw">in </span>tasks.into_iter().enumerate() {
-        <span class="macro">info!</span>(task = i, total, <span class="string">&quot;Waiting for task to finish&quot;</span>);
+        <span class="macro">debug!</span>(task = i, total, <span class="string">&quot;Waiting for task to finish&quot;</span>);
         <span class="kw">match </span>task.<span class="kw">await </span>{
             <span class="prelude-val">Ok</span>(outputs) =&gt; {
-                <span class="macro">info!</span>(<span class="string">&quot;Sending outputs&quot;</span>);
+                <span class="macro">trace!</span>(count = outputs.len(), <span class="string">&quot;Sending outputs&quot;</span>);
                 <span class="kw">for </span>output <span class="kw">in </span>outputs {
                     output_sink.send(output).<span class="kw">await</span>;
                 }
