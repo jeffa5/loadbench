@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use async_channel::TrySendError;
 use tokio::time::interval;
-use tracing::{info, warn};
+use tracing::{info, warn, trace, debug};
 
 use crate::{
     client::{self, Dispatcher, DispatcherGenerator},
@@ -100,10 +100,10 @@ pub async fn generate_load<
 
     let total = tasks.len();
     for (i, task) in tasks.into_iter().enumerate() {
-        info!(task = i, total, "Waiting for task to finish");
+        debug!(task = i, total, "Waiting for task to finish");
         match task.await {
             Ok(outputs) => {
-                info!("Sending outputs");
+                trace!(count = outputs.len(), "Sending outputs");
                 for output in outputs {
                     output_sink.send(output).await;
                 }
