@@ -80,6 +80,7 @@ pub async fn generate_load<
             }
             Err(TrySendError::Closed(_value)) => {
                 // nothing else to do but stop the loop
+                warn!("Input sender already closed while trying to generate more load");
                 break;
             }
         }
@@ -87,7 +88,7 @@ pub async fn generate_load<
         ticker.tick().await;
 
         i += 1;
-        if i == total {
+        if i >= total {
             break;
         }
     }
@@ -98,6 +99,7 @@ pub async fn generate_load<
     input_generator.close();
 
     for (i, task) in tasks.into_iter().enumerate() {
+        info!(task = i, "Waiting for task to finish");
         match task.await {
             Ok(outputs) => {
                 for output in outputs {
