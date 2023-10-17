@@ -114,6 +114,8 @@
 <a href="#114" id="114">114</a>
 <a href="#115" id="115">115</a>
 <a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>serde::Serialize;
 <span class="kw">use </span>std::time::Duration;
 
@@ -214,10 +216,12 @@
     <span class="macro">info!</span>(<span class="string">&quot;Closing input generator&quot;</span>);
     input_generator.close();
 
+    <span class="kw">let </span>total = tasks.len();
     <span class="kw">for </span>(i, task) <span class="kw">in </span>tasks.into_iter().enumerate() {
-        <span class="macro">info!</span>(task = i, <span class="string">&quot;Waiting for task to finish&quot;</span>);
+        <span class="macro">info!</span>(task = i, total, <span class="string">&quot;Waiting for task to finish&quot;</span>);
         <span class="kw">match </span>task.<span class="kw">await </span>{
             <span class="prelude-val">Ok</span>(outputs) =&gt; {
+                <span class="macro">info!</span>(<span class="string">&quot;Sending outputs&quot;</span>);
                 <span class="kw">for </span>output <span class="kw">in </span>outputs {
                     output_sink.send(output).<span class="kw">await</span>;
                 }
