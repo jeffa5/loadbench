@@ -98,10 +98,12 @@ pub async fn generate_load<
     info!("Closing input generator");
     input_generator.close();
 
+    let total = tasks.len();
     for (i, task) in tasks.into_iter().enumerate() {
-        info!(task = i, "Waiting for task to finish");
+        info!(task = i, total, "Waiting for task to finish");
         match task.await {
             Ok(outputs) => {
+                info!("Sending outputs");
                 for output in outputs {
                     output_sink.send(output).await;
                 }
